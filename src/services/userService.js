@@ -38,6 +38,10 @@ class UserService {
         return user;
     }
 
+    async getAllUsers() {
+        return await userRepository.getAll();
+    }
+
     async update(id, updateData) {
         const user = await userRepository.update(id, updateData);
         if (!user) {

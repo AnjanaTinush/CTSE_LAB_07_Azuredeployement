@@ -48,6 +48,21 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getAllUsers = async (req, res) => {
+    try {
+        const users = await userService.getAllUsers();
+        res.json({
+            success: true,
+            users
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+};
+
 const updateUser = async (req, res) => {
     try {
         const user = await userService.update(req.params.id, req.body);
@@ -82,6 +97,7 @@ module.exports = {
     registerUser,
     loginUser,
     getUserById,
+    getAllUsers,
     updateUser,
     deleteUser
 };
