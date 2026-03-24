@@ -1,0 +1,43 @@
+version: '3.9'
+
+services:
+  user-service:
+    build: ./user-service
+    ports:
+      - "3001:3001"
+    environment:
+      - USER_MANAGEMENT_MONGO_URI=mongodb+srv://anjana2:anjana@cluster0.rg6ebmf.mongodb.net/User_Management
+      - PORT=3001
+      - JWT_SECRET=your_jwt_secret_key_here
+    depends_on:
+      - mongodb
+    networks:
+      - microservices
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - user-service
+    networks:
+      - microservices
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - microservices
+    volumes:
+      - mongodb_data:/data/db
+
+networks:
+  microservices:
+    driver: bridge
+
+volumes:
+  mongodb_data:
