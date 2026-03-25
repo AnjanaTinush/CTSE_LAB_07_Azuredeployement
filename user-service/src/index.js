@@ -1,35 +1,35 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const connectDB = require('./config/db');
-const userRoutes = require('./routes/userRoutes');
 
-// Load env vars
 dotenv.config();
-
-// Connect to database
-connectDB();
 
 const app = express();
 
-// Body parser
-app.use(express.json());
+// connect DB
+connectDB();
 
-// Enable CORS
+app.use(express.json());
 app.use(cors());
 
-// Mount routers
-app.use('/api/users', userRoutes);
+// ✅ health
+app.get("/health", (req, res) => {
+  const dbConnected = mongoose.connection.readyState === 1;
+  res.json({ status: "OK", service: "user-service", dbConnected });
+});
+
+// ✅ test route (VERY IMPORTANT)
+app.get("/test", (req, res) => {
+  res.json({ message: "User service working" });
+});
+
+// routes
+app.use('/api/users', require('./routes/userRoutes'));
 
 const PORT = process.env.PORT || 3001;
 
-const server = app.listen(PORT, () => {
-    console.log(`User service running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err, promise) => {
-    console.log(`Error: ${err.message}`);
-    // Close server & exit process
-    server.close(() => process.exit(1));
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`User service running on port ${PORT}`);
 });
