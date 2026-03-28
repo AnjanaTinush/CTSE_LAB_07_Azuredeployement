@@ -20,7 +20,7 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", service: "user-service", dbConnected });
 });
 
-// ✅ test route (VERY IMPORTANT)
+//  test route (VERY IMPORTANT)
 app.get("/test", (req, res) => {
   res.json({ message: "User service working" });
 });
